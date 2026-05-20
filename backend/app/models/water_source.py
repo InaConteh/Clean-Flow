@@ -19,6 +19,8 @@ class WaterSource(db.Model):
     status = db.Column(db.String(16), nullable=False, default=WaterSourceStatus.SAFE)
     last_tested = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     district = db.Column(db.String(128))
+    committee_phone = db.Column(db.String(32))
+    preferred_language = db.Column(db.String(10), default="en")
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     reports = db.relationship("Report", back_populates="source", lazy="dynamic")
