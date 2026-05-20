@@ -1,0 +1,2 @@
+Flask-Migrate stores Alembic revisions here.
+Run: flask --app wsgi db migrate -m "message"
