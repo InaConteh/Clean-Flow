@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-surface text-body font-sans antialiased;
+}
+
+.leaflet-container {
+  @apply rounded-lg shadow-sm;
+  height: 420px;
+  width: 100%;
+}
