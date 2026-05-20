@@ -18,8 +18,10 @@ def create_app(config_name: str | None = None) -> Flask:
     limiter.init_app(app)
 
     from app.routes import api_bp
+    from app.routes.analytics import analytics_bp
 
     app.register_blueprint(api_bp, url_prefix="/api")
+    app.register_blueprint(analytics_bp, url_prefix="/api")
 
     @app.route("/health")
     def health():

@@ -3,11 +3,13 @@ from flask_jwt_extended import jwt_required
 
 from app.routes import api_bp
 from app.models.repair_case import RepairCase, RepairStatus
+from app.models.user import UserRole
 from app.services.dispatch import DispatchService
+from app.services.auth_service import role_required
 
 
-@api_bp.route("/repairs", methods=["GET"])
-@jwt_required()
+@api_bp.route("/admin/repairs", methods=["GET"])
+@role_required([UserRole.DISTRICT_OFFICIAL, UserRole.TECHNICAL_TEAM])
 def list_repairs():
     status = request.args.get("status")
     query = RepairCase.query
@@ -30,8 +32,8 @@ def list_repairs():
     )
 
 
-@api_bp.route("/repairs/<int:case_id>", methods=["PATCH"])
-@jwt_required()
+@api_bp.route("/admin/repairs/<int:case_id>", methods=["PATCH"])
+@role_required([UserRole.DISTRICT_OFFICIAL, UserRole.TECHNICAL_TEAM])
 def update_repair(case_id: int):
     data = request.get_json(silent=True) or {}
     new_status = data.get("status")
