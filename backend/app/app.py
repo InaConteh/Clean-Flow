@@ -11,7 +11,7 @@ def create_app():
 
     # Supabase Connection string - Use environment variables for security
     # Fallback string provided for local testing (replace with your credentials)
-    DEFAULT_CONN = "postgresql://postgres:[inaconteh2006]@db.nanpgezjrnbgeokdswmr.supabase.co:5432/postgres"
+    DEFAULT_CONN = "postgresql://postgres:inaconteh2006@db.nanpgezjrnbgeokdswmr.supabase.co:5432/postgres"
     
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', DEFAULT_CONN)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
