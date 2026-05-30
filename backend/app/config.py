@@ -23,6 +23,9 @@ class Config:
 
     REPAIR_DEFAULT_ETA_HOURS = int(os.getenv("REPAIR_DEFAULT_ETA_HOURS", "48"))
 
+    SUPABASE_URL = os.getenv("SUPABASE_URL", "")
+    SUPABASE_KEY = os.getenv("SUPABASE_KEY", "")
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
