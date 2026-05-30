@@ -5,12 +5,7 @@ from app.models.user import User, UserRole
 
 @pytest.fixture
 def app():
-    app = create_app("development")
-    app.config.update({
-        "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
-        "JWT_SECRET_KEY": "test-secret"
-    })
+    app = create_app("testing")
 
     with app.app_context():
         db.create_all()

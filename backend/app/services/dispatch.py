@@ -24,7 +24,7 @@ class DispatchService:
         return case
 
     def advance(self, case_id: int, new_status: str) -> RepairCase | None:
-        case = RepairCase.query.get(case_id)
+        case = db.session.get(RepairCase, case_id)
         if not case:
             return None
 
@@ -46,14 +46,14 @@ class DispatchService:
             message = f"Update on Case #{case.id}: Work is now in progress. ETA for completion: {case.eta}."
             # Since reporter_phone_hash is used, actual phone might not be available
             # unless stored elsewhere. Assuming some mechanism to get it or using committee_phone.
-            source = WaterSource.query.get(case.report.source_id)
+            source = db.session.get(WaterSource, case.report.source_id)
             if source and hasattr(source, 'committee_phone') and source.committee_phone:
                 send_sms(source.committee_phone, message)
 
         elif new_status == RepairStatus.RESOLVED:
             case.resolved_at = datetime.now(timezone.utc)
             # Update source status back to Green
-            source = WaterSource.query.get(case.report.source_id)
+            source = db.session.get(WaterSource, case.report.source_id)
             if source:
                 source.status = WaterSourceStatus.SAFE
 

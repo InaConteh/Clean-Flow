@@ -10,12 +10,7 @@ from datetime import datetime, timedelta, timezone
 
 @pytest.fixture
 def app():
-    app = create_app("development")
-    app.config.update({
-        "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
-        "JWT_SECRET_KEY": "test-secret-long-enough-for-security-reasons-123"
-    })
+    app = create_app("testing")
     with app.app_context():
         db.create_all()
         official = User(username="official", role=UserRole.DISTRICT_OFFICIAL)

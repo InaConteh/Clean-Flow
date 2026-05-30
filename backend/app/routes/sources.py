@@ -22,7 +22,7 @@ def get_sources():
 @role_required([UserRole.DISTRICT_OFFICIAL, UserRole.WATER_COMMITTEE_HEAD])
 def update_source(source_id: str):
     """Local source management for Committee Heads and Officials."""
-    source = WaterSource.query.get(source_id)
+    source = db.session.get(WaterSource, source_id)
     if not source:
         return jsonify({"error": "Water source not found"}), 404
 

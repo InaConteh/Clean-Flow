@@ -8,12 +8,7 @@ from app.models.user import User, UserRole
 
 @pytest.fixture
 def app():
-    app = create_app("development")
-    app.config.update({
-        "TESTING": True,
-        "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
-        "JWT_SECRET_KEY": "test-secret-long-enough-for-security-reasons-123"
-    })
+    app = create_app("testing")
     with app.app_context():
         db.create_all()
         # Seed
@@ -34,7 +29,7 @@ def test_repair_lifecycle(client):
     # 1. Create Report (triggers Red status and Reported case)
     client.post("/api/report", json={"source_id": "WELL1", "cause_category": "BROKEN_PUMP"})
 
-    source = WaterSource.query.get("WELL1")
+    source = db.session.get(WaterSource, "WELL1")
     assert source.status == WaterSourceStatus.UNSAFE
 
     case = RepairCase.query.first()
@@ -47,14 +42,14 @@ def test_repair_lifecycle(client):
 
     # 3. Advance to ASSIGNED
     client.patch(f"/api/admin/repairs/{case.id}", json={"status": RepairStatus.ASSIGNED}, headers=headers)
-    case = RepairCase.query.get(case.id)
+    case = db.session.get(RepairCase, case.id)
     assert case.status == RepairStatus.ASSIGNED
 
     # 4. Advance to RESOLVED
     client.patch(f"/api/admin/repairs/{case.id}", json={"status": RepairStatus.RESOLVED}, headers=headers)
-    case = RepairCase.query.get(case.id)
+    case = db.session.get(RepairCase, case.id)
     assert case.status == RepairStatus.RESOLVED
     assert case.resolved_at is not None
 
-    source = WaterSource.query.get("WELL1")
+    source = db.session.get(WaterSource, "WELL1")
     assert source.status == WaterSourceStatus.SAFE

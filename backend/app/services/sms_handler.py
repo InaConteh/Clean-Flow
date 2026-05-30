@@ -49,7 +49,7 @@ class SMSHandler:
         return "⚠ Unknown command. Try: STATUS WELL123 or CAUSE WELL123 BROKEN_PUMP"
 
     def _handle_status(self, source_id: str) -> str:
-        source = WaterSource.query.get(source_id.upper())
+        source = db.session.get(WaterSource, source_id.upper())
         if not source:
             return f"⚠ Unknown water point: {source_id}"
 
@@ -60,7 +60,7 @@ class SMSHandler:
 
     def _handle_cause(self, phone: str, source_id: str, cause: str) -> str:
         source_id = source_id.upper()
-        source = WaterSource.query.get(source_id)
+        source = db.session.get(WaterSource, source_id)
         if not source:
             return f"⚠ Unknown water point: {source_id}"
 

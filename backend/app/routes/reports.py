@@ -18,7 +18,7 @@ def create_report():
     if not source_id or not cause_category:
         return jsonify({"error": "source_id and cause_category are required"}), 400
 
-    source = WaterSource.query.get(source_id)
+    source = db.session.get(WaterSource, source_id)
     if not source:
         return jsonify({"error": "Water source not found"}), 404
 
