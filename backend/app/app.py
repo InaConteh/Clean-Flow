@@ -9,9 +9,7 @@ def create_app():
     """Application factory to configure and initialize the Flask app."""
     app = Flask(__name__)
 
-    # Supabase Connection string - Use environment variables for security
-    # Fallback string provided for local testing (replace with your credentials)
-    DEFAULT_CONN = "postgresql://postgres:inaconteh2006@db.nanpgezjrnbgeokdswmr.supabase.co:5432/postgres"
+    DEFAULT_CONN = "postgresql://cleanflow:cleanflow@localhost:5432/cleanflow"
     
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', DEFAULT_CONN)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -22,8 +20,8 @@ def create_app():
     # Register custom CLI commands
     @app.cli.command("init-db")
     def init_db():
-        """Creates all database tables in Supabase."""
-        print("Connecting to Supabase and initializing tables...")
+        """Creates all database tables in the configured PostgreSQL database."""
+        print("Connecting to PostgreSQL and initializing tables...")
         try:
             with app.app_context():
                 db.create_all()
