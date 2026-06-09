@@ -8,16 +8,23 @@ const styles: Record<WaterStatus, string> = {
 
 const labels: Record<WaterStatus, string> = {
   green: "Safe",
-  yellow: "Caution",
+  yellow: "Weather Risk",
   red: "Unsafe",
+};
+
+const icons: Record<WaterStatus, string> = {
+  green: "🟢",
+  yellow: "🌤️",
+  red: "🔴",
 };
 
 export default function StatusBadge({ status }: { status: WaterStatus }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${styles[status]}`}
+      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${styles[status]}`}
       aria-label={`Status: ${labels[status]}`}
     >
+      <span aria-hidden="true">{icons[status]}</span>
       {labels[status]}
     </span>
   );

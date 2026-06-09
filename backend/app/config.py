@@ -1,5 +1,15 @@
 import os
 from datetime import timedelta
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+
+BACKEND_DIR = Path(__file__).resolve().parents[1]
+REPO_ROOT = BACKEND_DIR.parent
+
+load_dotenv(REPO_ROOT / ".env")
+load_dotenv(BACKEND_DIR / ".env", override=True)
 
 
 class Config:

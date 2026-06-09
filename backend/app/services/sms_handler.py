@@ -11,6 +11,7 @@ from app.services.sms_gateway import send_sms
 
 STATUS_PATTERN = re.compile(r"^STATUS\s+(\w+)$", re.IGNORECASE)
 CAUSE_PATTERN = re.compile(r"^CAUSE\s+(\w+)\s+(\w+)$", re.IGNORECASE)
+NEARBY_PATTERN = re.compile(r"^NEARBY\s+(.+)$", re.IGNORECASE)
 TIPS_PATTERN = re.compile(r"^TIPS$", re.IGNORECASE)
 
 STATUS_EMOJI = {
@@ -42,6 +43,9 @@ class SMSHandler:
 
         if match := CAUSE_PATTERN.match(text):
             return self._handle_cause(from_number, match.group(1), match.group(2))
+
+        if match := NEARBY_PATTERN.match(text):
+            return self._handle_nearby(match.group(1))
 
         if TIPS_PATTERN.match(text):
             return self._handle_tips()
@@ -83,6 +87,33 @@ class SMSHandler:
             f"✅ Reported. Repair team notified. "
             f"ETA: {eta_hours} hours. Ref: #{repair_case.id}"
         )
+
+    def _handle_nearby(self, area: str) -> str:
+        area = area.strip()
+        if not area:
+            return "Send NEARBY <AREA>, e.g. NEARBY Bo"
+
+        matches = (
+            WaterSource.query.filter(
+                db.or_(
+                    WaterSource.district.ilike(f"%{area}%"),
+                    WaterSource.name.ilike(f"%{area}%"),
+                )
+            )
+            .order_by(WaterSource.status.asc(), WaterSource.name.asc())
+            .limit(3)
+            .all()
+        )
+
+        if not matches:
+            return f"No water points found near {area}. Try another area."
+
+        items = []
+        for source in matches:
+            emoji = STATUS_EMOJI.get(source.status, "")
+            items.append(f"{emoji} {source.id}:{source.name}".strip())
+
+        return "Nearby: " + "; ".join(items)
 
     def _handle_tips(self) -> str:
         return (
